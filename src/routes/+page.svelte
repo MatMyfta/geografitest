@@ -12,6 +12,9 @@
   let geojsonLayer;
   let currentRegion = null;
   let errors = 0;
+  let totalPoints = 0;
+  let scorePercentage = 0;
+  let maxPoints = 0;
   let remainingRegions = [];
   const colors = ["#28a745", "#ffc107", "#fd7e14", "#dc3545"];
 
@@ -41,10 +44,17 @@
       },
     }).addTo(map);
 
+    scorePercentage = maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0;
+    errors = 0;
     askNextRegion();
+    maxPoints = remainingRegions.length * 3;
   });
 
   function playAgain() {
+    totalPoints = 0;
+    scorePercentage = 0;
+    totalPoints = 0;
+    maxPoints = 0;
     showModal = false;
     remainingRegions = [...regions.features];
     geojsonLayer.eachLayer((layer) => {
@@ -81,11 +91,15 @@
       (currentRegion && currentRegion.properties.reg_name)
     ) {
       // Correct region
+      totalPoints += Math.max(3 - errors, 0);
+      maxPoints = regions.features.length * 3;
+      scorePercentage = Math.round((totalPoints / maxPoints) * 100);
       layer.setStyle({
         fillColor: colors[Math.min(errors, colors.length - 1)],
         fillOpacity: 0.7,
         color: "#000",
       });
+      errors = 0;
       askNextRegion();
     } else {
       // Incorrect region
@@ -96,6 +110,7 @@
 
 <div id="map"></div>
 <div class="current-region-box">
+  <p>Score: {scorePercentage}%</p>
   {#if currentRegion}
     <p>Find the region: <strong>{currentRegion.properties.reg_name}</strong></p>
   {/if}
@@ -104,8 +119,10 @@
 {#if showModal}
   <div class="modal-overlay"></div>
   <div class="modal">
-    <p>You have finished the game!</p>
-    <button on:click={() => playAgain()}>Play Again</button>
+    <h2 class="modal-title">Congratulations!</h2>
+    <p class="modal-message">You have finished the game!</p>
+    <p class="modal-score">Your score: {maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0}%</p>
+    <button on:click={() => playAgain()} class="primary-button">Play Again</button>
   </div>
 {/if}
 
@@ -133,11 +150,14 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+    text-align: center;
+    max-width: 400px;
+    width: 80%;
   }
 
   .modal-overlay {
@@ -148,5 +168,45 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
+  }
+
+  .modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .modal-message {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #555;
+  }
+
+  .modal-score {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+
+  .primary-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  .primary-button:hover {
+    background-color: #0056b3;
+  }
+
+  .primary-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
   }
 </style>
