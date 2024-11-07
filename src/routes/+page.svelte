@@ -1,8 +1,10 @@
 <script>
+  import '@fortawesome/fontawesome-free/css/all.css';
   import { onMount } from "svelte";
   let regions;
   let selectedArea = "regions";
   let showModal = false;
+  let expandBox = false;
 
   // Leaflet reference
   let L;
@@ -52,8 +54,8 @@
   async function loadRegions() {
     const response = await fetch(
       selectedArea === "regions"
-        ? "/assets/italy_regions.geojson"
-        : "/assets/italy_provinces.geojson"
+        ? "/assets/private/italy_regions.geojson"
+        : "/assets/private/italy_provinces.geojson"
     );
     regions = await response.json();
   }
@@ -157,23 +159,37 @@
 
 <div id="map"></div>
 <div class="current-region-box">
-  <div class="select-container">
-    <label for="area-select" class="select-label">Select level: </label>
-    <select id="area-select" bind:value={selectedArea} on:change={resetGame}>
-      <option value="regions" selected>Regions</option>
-      <option value="provinces">Provinces</option>
-    </select>
+  <div class="flex">
+    <!-- svelte-ignore a11y_consider_explicit_label -->
+    <button on:click={() => (expandBox = !expandBox)}>
+      <i class={`fas ${expandBox ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+    </button>
+    {#if selectedArea === "regions"}
+      <p>
+        Find the region: <strong>{currentRegion?.properties.reg_name}</strong>
+      </p>
+    {:else}
+      <p>
+        Find the province: <strong>{currentRegion.properties.prov_name}</strong>
+      </p>
+    {/if}
   </div>
-  <p>Score: {scorePercentage}%</p>
-  {#if selectedArea === "regions"}
-    <p>
-      Find the region: <strong>{currentRegion?.properties.reg_name}</strong>
-    </p>
-  {:else}
-    <p>
-      Find the province: <strong>{currentRegion.properties.prov_name}</strong>
-    </p>
-  {/if}
+  <div class="more-details">
+    {#if expandBox}
+      <div class="select-container">
+        <label for="area-select" class="select-label">Select level: </label>
+        <select
+          id="area-select"
+          bind:value={selectedArea}
+          on:change={resetGame}
+        >
+          <option value="regions" selected>Regions</option>
+          <option value="provinces">Provinces</option>
+        </select>
+      </div>
+      <p>Score: {scorePercentage}%</p>
+    {/if}
+  </div>
 </div>
 
 {#if showModal}
@@ -191,3 +207,6 @@
     </button>
   </div>
 {/if}
+
+<style>
+</style>

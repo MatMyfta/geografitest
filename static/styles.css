@@ -130,3 +130,22 @@ select:focus {
   padding: 15px;
   border: 1px solid #e0e0e0;
 }
+
+.more-details {
+  margin-top: 10px;
+}
+
+.flex {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.current-region-box button {
+  background-color: transparent;
+  box-shadow: 0 0;
+  border: 1px solid #ddd;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+}
