@@ -129,7 +129,7 @@ select:focus {
 .game-control {
   padding: 15px;
   border: 1px solid #e0e0e0;
-  z-index: 400;
+  z-index: 401;
 }
 
 .more-details {
