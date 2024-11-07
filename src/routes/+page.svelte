@@ -7,15 +7,6 @@
   // Leaflet reference
   let L;
 
-  async function loadRegions() {
-    const response = await fetch(
-      selectedArea === "regions"
-        ? "/assets/italy_regions.geojson"
-        : "/assets/italy_provinces.geojson"
-    );
-    regions = await response.json();
-  }
-
   let map;
   let geojsonLayer;
   let currentRegion = null;
@@ -27,21 +18,51 @@
   const colors = ["#28a745", "#ffc107", "#fd7e14", "#dc3545"];
 
   onMount(async () => {
+    await initializeMap();
+    await loadRegionsAndSetupMap();
+  });
+
+  async function initializeMap() {
     // Import Leaflet dynamically and assign to `L`
     L = await import("leaflet");
     await import("leaflet/dist/leaflet.css");
-    await loadRegions();
-    remainingRegions = [...regions.features];
+
     // Initialize the Leaflet map
-    map = L.map("map", { minZoom: 5, zoomControl: false }).setView(
-      [42.5, 12.5],
-      6
-    );
+    map = L.map("map", {
+      minZoom: 5,
+      zoomControl: false,
+      attributionControl: false,
+    }).setView([42.5, 12.5], 6);
     L.control
       .zoom({
         position: "topright",
       })
       .addTo(map);
+  }
+
+  async function loadRegionsAndSetupMap() {
+    await loadRegions();
+    remainingRegions = [...regions.features];
+    maxPoints = remainingRegions.length * 3;
+
+    loadGeoJsonLayer();
+    askNextRegion();
+  }
+
+  async function loadRegions() {
+    const response = await fetch(
+      selectedArea === "regions"
+        ? "/assets/italy_regions.geojson"
+        : "/assets/italy_provinces.geojson"
+    );
+    regions = await response.json();
+  }
+
+  function loadGeoJsonLayer() {
+    // Remove existing geojson layer if present
+    if (geojsonLayer) {
+      map.removeLayer(geojsonLayer);
+    }
 
     // Load GeoJSON and add it to the map
     geojsonLayer = L.geoJSON(regions, {
@@ -51,19 +72,10 @@
         });
       },
     }).addTo(map);
-
-    scorePercentage =
-      maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0;
-    errors = 0;
-    askNextRegion();
-    maxPoints = remainingRegions.length * 3;
-  });
+  }
 
   function playAgain() {
-    totalPoints = 0;
-    scorePercentage = 0;
-    maxPoints = 0;
-    showModal = false;
+    resetGameVariables();
     remainingRegions = [...regions.features];
     geojsonLayer.eachLayer((layer) => {
       geojsonLayer.resetStyle(layer);
@@ -72,68 +84,35 @@
   }
 
   async function resetGame() {
-    // Import Leaflet dynamically again in case `resetGame` is called
-    if (!L) {
-      L = await import("leaflet");
-    }
-    await loadRegions();
-    remainingRegions = [...regions.features];
-    map.eachLayer((layer) => {
-      if (layer instanceof L.Layer && layer !== map.zoomControl) {
-        map.removeLayer(layer);
-      }
-    });
-    geojsonLayer = L.geoJSON(regions, {
-      onEachFeature: (feature, layer) => {
-        layer.on({
-          click: () => handleRegionClick(feature, layer),
-        });
-      },
-    }).addTo(map);
-    maxPoints = remainingRegions.length * 3;
-    scorePercentage = 0;
+    await loadRegionsAndSetupMap();
+  }
+
+  function resetGameVariables() {
     totalPoints = 0;
+    scorePercentage = 0;
+    maxPoints = 0;
+    showModal = false;
     currentRegion = null;
-    askNextRegion();
-    updateCurrentRegionQuestion();
+    errors = 0;
   }
 
   function askNextRegion() {
     if (remainingRegions.length === 0) {
-      if (currentRegion && currentRegion.layer) {
-        // Set the final region color
-        currentRegion.layer.setStyle({
-          fillColor: colors[Math.min(errors, colors.length - 1)],
-          fillOpacity: 0.7,
-          color: "#000",
-        });
-      }
-      showModal = true;
+      showCompletionModal();
       return;
     }
-    // Pick a random region from the remaining ones
     const randomIndex = Math.floor(Math.random() * remainingRegions.length);
     const feature = remainingRegions[randomIndex];
     const layer = geojsonLayer.getLayers().find((l) => l.feature === feature);
     currentRegion = { ...feature, layer };
     remainingRegions.splice(randomIndex, 1);
-    errors = 0;
-    updateCurrentRegionQuestion();
   }
 
   function handleRegionClick(feature, layer) {
-    if (
-      (selectedArea === "regions" &&
-        feature.properties.reg_name ===
-          (currentRegion && currentRegion.properties.reg_name)) ||
-      (selectedArea === "provinces" &&
-        feature.properties.prov_name ===
-          (currentRegion && currentRegion.properties.prov_name))
-    ) {
+    if (isCorrectRegion(feature)) {
       // Correct region
       totalPoints += Math.max(3 - errors, 0);
-      maxPoints = regions.features.length * 3;
-      scorePercentage = Math.round((totalPoints / maxPoints) * 100);
+      updateScore();
       layer.setStyle({
         fillColor: colors[Math.min(errors, colors.length - 1)],
         fillOpacity: 0.7,
@@ -147,13 +126,32 @@
     }
   }
 
-  function updateCurrentRegionQuestion() {
-    // Update the question text to reflect the current level
-    if (remainingRegions.length > 0) {
-      const randomIndex = Math.floor(Math.random() * remainingRegions.length);
-      const feature = remainingRegions[randomIndex];
-      currentRegion = { ...feature };
+  function isCorrectRegion(feature) {
+    return (
+      (selectedArea === "regions" &&
+        feature.properties.reg_name ===
+          (currentRegion && currentRegion.properties.reg_name)) ||
+      (selectedArea === "provinces" &&
+        feature.properties.prov_name ===
+          (currentRegion && currentRegion.properties.prov_name))
+    );
+  }
+
+  function updateScore() {
+    maxPoints = regions.features.length * 3;
+    scorePercentage = Math.round((totalPoints / maxPoints) * 100);
+  }
+
+  function showCompletionModal() {
+    if (currentRegion && currentRegion.layer) {
+      // Set the final region color
+      currentRegion.layer.setStyle({
+        fillColor: colors[Math.min(errors, colors.length - 1)],
+        fillOpacity: 0.7,
+        color: "#000",
+      });
     }
+    showModal = true;
   }
 </script>
 
@@ -168,7 +166,9 @@
   </div>
   <p>Score: {scorePercentage}%</p>
   {#if selectedArea === "regions"}
-    <p>Find the region: <strong>{currentRegion?.properties.reg_name}</strong></p>
+    <p>
+      Find the region: <strong>{currentRegion?.properties.reg_name}</strong>
+    </p>
   {:else}
     <p>
       Find the province: <strong>{currentRegion.properties.prov_name}</strong>
@@ -186,8 +186,8 @@
         ? Math.round((totalPoints / maxPoints) * 100)
         : 0}%
     </p>
-    <button on:click={() => playAgain()} class="primary-button"
-      >Play Again</button
-    >
+    <button on:click={() => playAgain()} class="primary-button">
+      Play Again
+    </button>
   </div>
 {/if}
