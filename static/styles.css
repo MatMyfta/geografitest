@@ -8,18 +8,6 @@ body {
   background-color: #f3f5f7;
 }
 
-.current-region-box {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background-color: white;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-}
-
 .modal {
   position: fixed;
   top: 50%;
@@ -126,9 +114,22 @@ select:focus {
   color: #333;
 }
 
-.current-region-box {
+.game-control {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+.game-control {
   padding: 15px;
   border: 1px solid #e0e0e0;
+  z-index: 400;
 }
 
 .more-details {
@@ -141,7 +142,7 @@ select:focus {
   align-items: center;
 }
 
-.current-region-box button {
+.game-control button {
   background-color: transparent;
   box-shadow: 0 0;
   border: 1px solid #ddd;
