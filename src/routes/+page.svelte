@@ -127,10 +127,9 @@
   }
 </script>
 
-<div id="map"></div>
-
 <GameControl on:resetGame={resetGame} bind:currentRegion={currentRegion} />
 
+<div id="map"></div>
 
 {#if showModal}
   <div class="modal-overlay"></div>
