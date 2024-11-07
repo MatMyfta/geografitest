@@ -1,3 +1,132 @@
 body {
-    margin: 0;
+  margin: 0;
+}
+
+#map {
+  height: 100vh;
+  width: 100%;
+  background-color: #f3f5f7;
+}
+
+.current-region-box {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  text-align: center;
+  max-width: 400px;
+  width: 80%;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.modal-message {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.modal-score {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #007bff;
+}
+
+.primary-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.primary-button:hover {
+  background-color: #0056b3;
+}
+
+.primary-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+.select-container {
+  margin-bottom: 10px;
+}
+
+.select-label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+select {
+  padding: 5px;
+  font-size: 16px;
+}
+
+select {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #ffffff;
+  transition: border-color 0.3s ease;
+}
+
+select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.select-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.select-label {
+  margin-right: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.current-region-box {
+  padding: 15px;
+  border: 1px solid #e0e0e0;
 }
