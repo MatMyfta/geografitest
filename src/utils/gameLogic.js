@@ -1,16 +1,20 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 
 export let totalPoints = writable(0);
 export let scorePercentage = writable(0);
 export let maxPoints = writable(0);
 export let remainingRegions = writable([]);
 export let selectedArea = writable("regions");
+export let clickedRegions = writable(new Set());
+export let correctRegions = writable(new Set());
 
 export function resetGameVariables() {
   totalPoints.set(0);
   scorePercentage.set(0);
   maxPoints.set(0);
   remainingRegions.set([]);
+  clickedRegions.set(new Set());
+  correctRegions.set(new Set());
 }
 
 export function askNextRegion() {
@@ -34,8 +38,6 @@ export function askNextRegion() {
 
   return feature;
 }
-
-
 
 export function updateScore(points, maxPoints) {
   scorePercentage.set(Math.round((points / maxPoints) * 100));

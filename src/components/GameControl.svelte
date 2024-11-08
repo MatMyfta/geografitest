@@ -6,13 +6,15 @@
     maxPoints,
   } from "../utils/gameLogic.js";
   import "@fortawesome/fontawesome-free/css/all.css";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, getContext } from "svelte";
 
   const dispatch = createEventDispatcher();
-
   export let currentRegion;
-
   let expandBox = false;
+  let incorrectRegions = new Set(); // Track incorrect regions
+
+  // Context for managing the map layers
+  const mapContext = getContext('leafletMap');
 
   function handleSelectChange(event) {
     selectedArea.set(event.target.value);
@@ -20,6 +22,7 @@
     scorePercentage.set(0);
     totalPoints.set(0);
     maxPoints.set(0);
+    incorrectRegions.clear();
   }
 
   function toggleExpandBox() {
@@ -41,8 +44,7 @@
       </p>
     {:else}
       <p>
-        Find the province: <strong>{currentRegion?.properties.prov_name}</strong
-        >
+        Find the province: <strong>{currentRegion?.properties.prov_name}</strong>
       </p>
     {/if}
   </div>
