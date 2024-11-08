@@ -2,6 +2,7 @@
   import { get, writable } from "svelte/store";
   import { onMount } from "svelte";
   import {
+    errors,
     totalPoints,
     maxPoints,
     remainingRegions,
@@ -23,7 +24,6 @@
   let map;
   let geojsonLayer;
   let currentRegion = null;
-  let errors = 0;
   const colors = ["#28a745", "#ffc107", "#fd7e14", "#dc3545"];
   let incorrectRegions = new Set();
 
@@ -139,11 +139,11 @@
       return correct;
     });
 
-    totalPoints.update((n) => n + calculatePoints(errors));
+    totalPoints.update((n) => n + calculatePoints());
     updateScore(get(totalPoints), get(maxPoints));
 
-    setLayerStyle(layer, colors[Math.min(errors, colors.length - 1)]);
-    errors = 0;
+    setLayerStyle(layer, colors[Math.min(get(errors), colors.length - 1)]);
+    errors.set(0);
 
     resetIncorrectRegions(incorrectRegions);
 
@@ -166,7 +166,7 @@
 
   // Function to handle incorrect region click
   function handleIncorrectRegionClick(layer, regionName) {
-    errors++;
+    errors.set(get(errors)+1);
     incorrectRegions.add(layer);
     setLayerStyle(layer, "#d3d3d3", 0.7);
     clickedRegions.update((clicked) => {
@@ -197,7 +197,7 @@
     if (currentRegion && currentRegion.layer) {
       // Set the final region color
       currentRegion.layer.setStyle({
-        fillColor: colors[Math.min(errors, colors.length - 1)],
+        fillColor: colors[Math.min(get(errors), colors.length - 1)],
         fillOpacity: 0.7,
         color: "#000",
       });
