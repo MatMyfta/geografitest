@@ -116,18 +116,15 @@ select:focus {
 
 .game-control {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 5px;
+  left: 5px;
   background-color: white;
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
   font-size: 16px;
-}
-
-.game-control {
-  padding: 15px;
+  max-width: calc(100% - 50px);
   border: 1px solid #e0e0e0;
   z-index: 401;
 }

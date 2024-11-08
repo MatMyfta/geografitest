@@ -14,7 +14,7 @@
   let incorrectRegions = new Set(); // Track incorrect regions
 
   // Context for managing the map layers
-  const mapContext = getContext('leafletMap');
+  const mapContext = getContext("leafletMap");
 
   function handleSelectChange(event) {
     selectedArea.set(event.target.value);
@@ -37,29 +37,28 @@
       <i class={`fas ${expandBox ? "fa-chevron-up" : "fa-chevron-down"}`}></i>
     </button>
 
-    {#if $selectedArea === "regions"}
-      <p>
-        Find the region: <strong>{currentRegion?.properties.reg_name}</strong>
-      </p>
-    {:else}
-      <p>
-        Find the province: <strong>{currentRegion?.properties.prov_name}</strong>
-      </p>
-    {/if}
+    <p>
+      Trova:
+      {#if $selectedArea === "regions"}
+        <strong>{currentRegion?.properties.reg_name}</strong>
+      {:else}
+        <strong>{currentRegion?.properties.prov_name}</strong>
+      {/if}
+    </p>
   </div>
 
   {#if expandBox}
     <div class="more-details">
-      <label for="area-select" class="select-label">Select level:</label>
+      <label for="area-select" class="select-label">Seleziona livello:</label>
       <select
         id="area-select"
         bind:value={$selectedArea}
         on:change={handleSelectChange}
       >
-        <option value="regions">Regions</option>
-        <option value="provinces">Provinces</option>
+        <option value="regions">Regioni</option>
+        <option value="provinces">Province</option>
       </select>
-      <p>Score: {$scorePercentage}%</p>
+      <p>Punteggio: <strong>{$scorePercentage}%</strong></p>
     </div>
   {/if}
 </div>

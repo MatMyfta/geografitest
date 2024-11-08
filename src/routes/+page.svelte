@@ -213,10 +213,10 @@
 {#if showModal}
   <div class="modal-overlay"></div>
   <div class="modal">
-    <h2 class="modal-title">Congratulations!</h2>
-    <p class="modal-message">You have finished the game!</p>
+    <h2 class="modal-title">Congratulazioni!</h2>
+    <p class="modal-message">Hai finito il gioco!</p>
     <p class="modal-score">
-      Your score: {$maxPoints > 0
+      Il tuo punteggio: {$maxPoints > 0
         ? Math.round(($totalPoints / $maxPoints) * 100)
         : 0}%
     </p>
