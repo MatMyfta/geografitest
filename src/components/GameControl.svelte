@@ -37,7 +37,6 @@
       <i class={`fas ${expandBox ? "fa-chevron-up" : "fa-chevron-down"}`}></i>
     </button>
 
-    <!-- Region Question -->
     {#if $selectedArea === "regions"}
       <p>
         Find the region: <strong>{currentRegion?.properties.reg_name}</strong>
@@ -49,7 +48,6 @@
     {/if}
   </div>
 
-  <!-- Accordion content with select level and score -->
   {#if expandBox}
     <div class="more-details">
       <label for="area-select" class="select-label">Select level:</label>
