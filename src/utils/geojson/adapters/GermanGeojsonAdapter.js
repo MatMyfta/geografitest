@@ -1,10 +1,10 @@
 import { GeojsonAdapter } from "./GeojsonAdapter";
 
-export class EuropeanStatesGeojsonAdapter extends GeojsonAdapter {
+export class GermanGeojsonAdapter extends GeojsonAdapter {
   getName(feature) {
     return feature.properties.name;
   }
   getFilename() {
-    return "/assets/private/europe.geojson";
+    return "/assets/private/germany.geojson";
   }
 }

@@ -1,9 +1,13 @@
 <script>
   // Define the modalities you want to support.
   let modalities = [
-    { name: "Regioni", value: "italian-regions" },
-    { name: "Province", value: "italian-provinces" },
+    { name: "Regioni Albania", value: "albanian-regions" },
+    { name: "Regioni Austria", value: "austrian-regions" },
+    { name: "Regioni Italia", value: "italian-regions" },
+    { name: "Province Italia", value: "italian-provinces" },
+    { name: "Province Germania", value: "german-provinces" },
     { name: "Stati Europei", value: "europe-states" },
+    { name: "Impero Romano", value: "roman-empire" },
   ];
 </script>
 
