@@ -51,11 +51,16 @@ export default class GameController {
     if (this.geojsonLayer) {
       this.map.removeLayer(this.geojsonLayer);
     }
+    let features = [];
     this.geojsonLayer = this.L.geoJSON(this.regions, {
       onEachFeature: (feature, layer) => {
+        features.push(layer);
         layer.on({ click: () => this._handleFeatureClick(feature, layer) });
       },
     }).addTo(this.map);
+    let group = new L.featureGroup(features);
+
+    this.map.fitBounds(group.getBounds());
   }
 
   _setNextRegion() {

@@ -16,7 +16,7 @@ export default class MapService {
       zoomControl: false,
       attributionControl: false,
       ...this.options,
-    }).setView([42.5, 12.5], 4);
+    });
 
     this.L.control.zoom({ position: "topright" }).addTo(this.map);
     return this.map;
