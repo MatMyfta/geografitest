@@ -5,6 +5,7 @@ import { AlbanianRegionsGeojsonAdapter } from "./AlbanianRegionsGeojsonAdapter";
 import { RomanEmpireGeojsonAdapter } from "./RomanEmpireGeojsonAdapter";
 import { AustrianGeojsonAdapter } from "./AustrianGeojsonAdapter";
 import { GermanGeojsonAdapter } from "./GermanGeojsonAdapter";
+import { UnitedStatesGeojsonAdapter } from "./UnitedStatesGeojsonAdapter";
 
 export class GeojsonBuilder {
   static createAdapter(modality) {
@@ -23,6 +24,8 @@ export class GeojsonBuilder {
         return new GermanGeojsonAdapter();
       case "roman-empire":
         return new RomanEmpireGeojsonAdapter();
+      case "united-states":
+        return new UnitedStatesGeojsonAdapter();
     }
     return new ItalianRegionsGeojsonAdapter();
   }

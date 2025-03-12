@@ -8,6 +8,7 @@
     { name: "Province Germania", value: "german-provinces" },
     { name: "Stati Europei", value: "europe-states" },
     { name: "Impero Romano", value: "roman-empire" },
+    { name: "Stati Uniti", value: "united-states" },
   ];
 </script>
 
